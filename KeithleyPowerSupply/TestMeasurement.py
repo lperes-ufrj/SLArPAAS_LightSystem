@@ -42,11 +42,11 @@ for i in range(data_points):
 
 # Save the data columns in a CSV file
 data = pd.DataFrame({
+    'Voltage (V)': voltage_probe,
     'Current (A)': currents,
-    'Voltage (V)': voltages,
     'Current Std (A)': currents_stds,
 })
+
+
 data.to_csv('IV_Curve.csv')
-
-
 keithley.shutdown()                     # Ramps the current to 0 mA and disables output
