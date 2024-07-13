@@ -9,9 +9,10 @@ from pymeasure.instruments.keithley import Keithley2450
 import pyvisa
 import pandas as pd
 from time import sleep
+import time
 
 
-data_points = 50 
+data_points = 100
 
 
 from pymeasure.adapters import VISAAdapter
@@ -19,6 +20,7 @@ from pymeasure.adapters import VISAAdapter
 adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
 keithley = Keithley2450(adapter)
 
+keithley.reset()
 keithley.apply_voltage()                # Sets up to source voltage
 keithley.source_voltage_range = -60  # Sets the source voltage range to -55 V
 keithley.compliance_current = 1e-4        # Sets the compliance current to 100 mu A.
@@ -28,25 +30,61 @@ keithley.measure_current()              # Sets up to measure voltage
 
 
 # Allocate arrays to store the measurement results
-voltage_probe = np.linspace(-52,-60,data_points)
+voltage_probe = np.linspace(-45,-60,data_points)
 currents = np.zeros_like(voltage_probe)
-currents_stds = np.zeros_like(currents)
+currents_stds = np.zeros_like(voltage_probe)
+#print(currents)
+#print(currents_stds)
 
 for i in range(data_points):
 
-    keithley.ramp_to_voltage(voltage_probe[i])  # Ramps the current to 5 mA
-    sleep(.5)
+    keithley.source_voltage = voltage_probe[i] # Ramps the current to 5 mA
     currents[i] = keithley.current  # Save current
-    currents_stds[i] = keithley.std_current # Save current std
-    sleep(.5)
+    #currents_stds[i] = keithley.std_current[0] # Save current std
 
 # Save the data columns in a CSV file
 data = pd.DataFrame({
     'Voltage (V)': voltage_probe,
     'Current (A)': currents,
-    'Current Std (A)': currents_stds,
+    #'Current Std (A)': currents_stds,
 })
+keithley.source_voltage = 0 
+keithley.reset() 
+keithley.shutdown()      
+
+filename = 'SiPM_IV_Curve'+str(time.strftime("%Y%m%d"))+'.csv'
+data.to_csv(filename)
+
+data = pd.read_csv(filename,usecols=['Voltage (V)','Current (A)']) 
+# Read the CSV file into a pandas DataFrame
+
+data.head()
+
+# Extract the columns
+voltage_plot = data.iloc[:, 0] 
+current_plot = data.iloc[:, 1]*10**6
+#current_std_plot = data.iloc[:, 2]*10**6
+
+# Plot the data
+plt.figure(figsize=(10, 6))
+plt.plot(-voltage_plot, current_plot, marker='.', linestyle='--')
+plt.ylabel(r'Current ($\mu$A)')
+plt.xlabel('Reverse Voltage (V)')
+plt.title('Plot of CSV Data Oscilloscope')
+plt.grid()
+
+plt.show()
 
 
-data.to_csv('IV_Curve.csv')
-keithley.shutdown()                     # Ramps the current to 0 mA and disables output
+voltage = np.array(voltage_plot)
+der = np.diff(np.log(np.array(-current_plot))) / np.diff(voltage_plot)
+x2 = (voltage_plot[:-1] + voltage_plot[1:]) / 2
+
+# Plot the data
+plt.figure(figsize=(10, 6))
+plt.plot(-x2, -der, marker='*', linestyle='--', label = 'SiPM')
+plt.ylabel(r'$\frac{d}{dV}\log(I)$', fontsize =17, rotation = 'vertical')
+plt.xlabel('Reverse Voltage (V)')
+plt.title('Plot of CSV Data 2450 SourceMeter')
+
+plt.show()
