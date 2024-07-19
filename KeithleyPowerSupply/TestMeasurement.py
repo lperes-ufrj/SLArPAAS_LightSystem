@@ -1,6 +1,8 @@
 ## Simplest Code possible for the SiPMs, Drops the Bias voltage for -60V and measures the current.
 
 import os
+import sys
+import usb.core
 import serial   
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,6 +19,21 @@ data_points = 100
 
 from pymeasure.adapters import VISAAdapter
 
+
+dev = usb.core.find(idVendor=0x05e6,idProduct=0x2450)
+ep = dev[0].interfaces()[0].endpoints()[0]
+i = dev[0].interfaces()[0].bInterfaceNumber
+
+dev.reset()
+
+if dev.is_kernel_driver_active(i):
+    try:
+        dev.detach_kernel_driver(i)
+    except usb.core.USBError as e:
+        sys.exit("Could not detatch kernel driver from interface({0}): {1}".format(i, str(e)))
+
+
+
 adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
 keithley = Keithley2450(adapter)
 
@@ -24,13 +41,13 @@ keithley.reset()
 keithley.apply_voltage()                # Sets up to source voltage
 keithley.source_voltage_range = -60  # Sets the source voltage range to -55 V
 keithley.compliance_current = 1e-4        # Sets the compliance current to 100 mu A.
-keithley.source_voltage = 0             # Sets the source voltage to 0 Volts.
+keithley.source_voltage = -50             # Sets the source voltage to 0 Volts.
 keithley.enable_source()                # Enables the source output
 keithley.measure_current()              # Sets up to measure voltage
 
 
 # Allocate arrays to store the measurement results
-voltage_probe = np.linspace(-45,-60,data_points)
+voltage_probe = np.linspace(-50,-60,data_points)
 currents = np.zeros_like(voltage_probe)
 currents_stds = np.zeros_like(voltage_probe)
 #print(currents)
@@ -38,9 +55,9 @@ currents_stds = np.zeros_like(voltage_probe)
 
 for i in range(data_points):
 
-    keithley.source_voltage = voltage_probe[i] # Ramps the current to 5 mA
+    keithley.ramp_to_voltage(voltage_probe[i], steps=2, pause=1) # Ramps the current to 5 mA
     currents[i] = keithley.current  # Save current
-    #currents_stds[i] = keithley.std_current[0] # Save current std
+    #currents_stds[i] = keithley.std_current # Save current std
 
 # Save the data columns in a CSV file
 data = pd.DataFrame({
@@ -52,7 +69,7 @@ keithley.source_voltage = 0
 keithley.reset() 
 keithley.shutdown()      
 
-filename = 'SiPM_IV_Curve'+str(time.strftime("%Y%m%d"))+'.csv'
+filename = 'SiPM_IV_Curve'+str(time.strftime("%Y%m%d%M"))+'.csv'
 data.to_csv(filename)
 
 data = pd.read_csv(filename,usecols=['Voltage (V)','Current (A)']) 
@@ -75,16 +92,3 @@ plt.grid()
 
 plt.show()
 
-
-voltage = np.array(voltage_plot)
-der = np.diff(np.log(np.array(-current_plot))) / np.diff(voltage_plot)
-x2 = (voltage_plot[:-1] + voltage_plot[1:]) / 2
-
-# Plot the data
-plt.figure(figsize=(10, 6))
-plt.plot(-x2, -der, marker='*', linestyle='--', label = 'SiPM')
-plt.ylabel(r'$\frac{d}{dV}\log(I)$', fontsize =17, rotation = 'vertical')
-plt.xlabel('Reverse Voltage (V)')
-plt.title('Plot of CSV Data 2450 SourceMeter')
-
-plt.show()
