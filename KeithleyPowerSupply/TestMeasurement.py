@@ -26,6 +26,8 @@ i = dev[0].interfaces()[0].bInterfaceNumber
 
 dev.reset()
 
+
+
 if dev.is_kernel_driver_active(i):
     try:
         dev.detach_kernel_driver(i)
@@ -41,22 +43,23 @@ keithley.reset()
 keithley.apply_voltage()                # Sets up to source voltage
 keithley.source_voltage_range = -60  # Sets the source voltage range to -55 V
 keithley.compliance_current = 1e-4        # Sets the compliance current to 100 mu A.
-keithley.source_voltage = -50             # Sets the source voltage to 0 Volts.
+keithley.source_voltage = -60             # Sets the source voltage to 0 Volts.
 keithley.enable_source()                # Enables the source output
 keithley.measure_current()              # Sets up to measure voltage
 
 
 # Allocate arrays to store the measurement results
-voltage_probe = np.linspace(-50,-60,data_points)
+voltage_probe = np.linspace(-60,-50,data_points)
 currents = np.zeros_like(voltage_probe)
 currents_stds = np.zeros_like(voltage_probe)
 #print(currents)
 #print(currents_stds)
 
 for i in range(data_points):
-
-    keithley.ramp_to_voltage(voltage_probe[i], steps=2, pause=1) # Ramps the current to 5 mA
+    
+    keithley.source_voltage = voltage_probe[i]# Ramps the current to 5 mA
     currents[i] = keithley.current  # Save current
+    sleep(.2)
     #currents_stds[i] = keithley.std_current # Save current std
 
 # Save the data columns in a CSV file

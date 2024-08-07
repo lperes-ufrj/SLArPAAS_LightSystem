@@ -10,16 +10,24 @@ from time import sleep
 
 import keyoscacquire.oscacq as koa
 
+def averaged_trace(scope, measurement_number, averages=8):
+    # Set the number of averages and get a trace
+    # Save the trace data as a csv and a png plot, without showing the plot
+    # (the averaging mode and the number of averages is also automatically
+    # saved inside the file, together with a timestamp and more)
+    scope.set_options_getTrace_save(fname=f"../nEXOMeasurements/measurement{measurement_number}",num_points=1000)
 
-def get_averaged(osc_address, averages=1):
-    scope = koa.Oscilloscope(address=osc_address)
-    time, volts, channels = scope.set_options_getTrace(acq_type='AVER'+str(averages))
-    scope.close()
-    return time, volts, channels
+def different_averaging():
+    # Connect to the scope
+    scope = koa.Oscilloscope(address='USB0::10893::6006::MY58262555::0::INSTR')
+        # Set the channels to view on the scope
+    scope.active_channels = [1]
+    # Prepare a two panel plot
+   
+    # Obtain traces for different numbers of averages
+    for i in range(20):
+        averaged_trace(scope, i)
+        # Plot channel 1 to ax[0] and ch 3 to ax[1]
 
+different_averaging()
 
-time, volts, channels = get_averaged('USB0::10893::6006::MY58262555::0::INSTR')
-for y, ch in zip(volts.T, channels): # need to transpose volts: each row is one channel
-    plt.plot(time, y, label=ch)
-    plt.legend()
-    plt.show()
