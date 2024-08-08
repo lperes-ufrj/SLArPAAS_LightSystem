@@ -52,7 +52,7 @@ try:
 
         for i_ch in SiPMs_channels[i_board]:
             select_relay(board_address,i_ch)
-            # print(i_board,i_ch) 
+
 
             if(board_address == 0x25):
                 SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
@@ -67,7 +67,7 @@ try:
             output_file.write(line+'\n')
             print(SiPM_number, "Vbr = ", Vbr)
 
-except:
+except KeyboardInterrupt:
     output_file.close()
     turn_off_relaychs()
 

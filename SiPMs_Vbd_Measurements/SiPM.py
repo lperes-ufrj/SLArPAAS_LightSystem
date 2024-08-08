@@ -83,7 +83,6 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     #e = dev[0].interfaces()[0].endpoints()[0]
     #i = dev[0].interfaces()[0].bInterfaceNumber
     dev.reset()
-
     #if dev.is_kernel_driver_active(i):
     #    try:
     #        dev.detach_kernel_driver(i)
@@ -93,7 +92,6 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
 
     adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
     keithley = Keithley2450(adapter)
-
     keithley.reset()
     keithley.apply_voltage()                # Sets up to source voltage
     keithley.source_voltage_range = NegBiasStart  # Sets the source voltage range to -55 V
@@ -107,7 +105,7 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     voltage_probe = np.linspace(NegBiasStart,NegBiasEnd,data_points)
     currents = np.zeros_like(voltage_probe)
     currents_stds = np.zeros_like(voltage_probe)
-    #print(currents)
+    print(currents)
     #print(currents_stds)
 
     for i in range(data_points):
