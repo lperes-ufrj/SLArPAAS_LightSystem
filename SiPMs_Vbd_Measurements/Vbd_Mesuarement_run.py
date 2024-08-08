@@ -63,13 +63,14 @@ try:
             time.sleep(.5)
 
             line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+'_'+str(SiPM_number)+", "+str(Vbr)
-            print(SiPM_number)
             output_file.write(line+'\n')
-            print(SiPM_number, "Vbr = ", Vbr)
+            print(SiPM_number, "Vbr = ", round(Vbr,2))
 
 except KeyboardInterrupt:
     output_file.close()
     turn_off_relaychs()
+    SiPM.ShutdownPowerSupply()
 
 output_file.close()
 turn_off_relaychs()
+SiPM.ShutdownPowerSupply()
