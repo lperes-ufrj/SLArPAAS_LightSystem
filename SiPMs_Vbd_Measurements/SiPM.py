@@ -80,15 +80,15 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
         sys.exit("It is expected a negative Bias voltage.")
 
     dev = usb.core.find(idVendor=0x05e6,idProduct=0x2450)
-    e = dev[0].interfaces()[0].endpoints()[0]
-    i = dev[0].interfaces()[0].bInterfaceNumber
+    #e = dev[0].interfaces()[0].endpoints()[0]
+    #i = dev[0].interfaces()[0].bInterfaceNumber
     dev.reset()
 
-    if dev.is_kernel_driver_active(i):
-        try:
-            dev.detach_kernel_driver(i)
-        except usb.core.USBError as e:
-            sys.exit("Could not detatch kernel driver from interface({0}): {1}".format(i, str(e)))
+    #if dev.is_kernel_driver_active(i):
+    #    try:
+    #        dev.detach_kernel_driver(i)
+    #    except usb.core.USBError as e:
+    #        sys.exit("Could not detatch kernel driver from interface({0}): {1}".format(i, str(e)))
 
 
     adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
