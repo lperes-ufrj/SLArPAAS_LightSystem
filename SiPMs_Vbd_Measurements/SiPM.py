@@ -21,7 +21,7 @@ def Derivative(x,y):
     return dydx,x2 
     
 
-def MakePlots(df, i_sipm):
+def MakePlots(df, i_sipm, dir=''):
     #df = pd.read_csv(csv_file, skiprows=0,usecols=['Current (A)', 'Voltage (V)'])  
     voltage = df.iloc[:, 0]  # the first column is Voltage
     current = df.iloc[:, 1]  # the second column is Current\
@@ -34,7 +34,7 @@ def MakePlots(df, i_sipm):
     plt.title('Plot of CSV Data Oscilloscope')
     plt.legend()
     plt.grid()
-    plt.savefig('IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
     
     plt.figure(figsize=(10, 6))
@@ -45,7 +45,7 @@ def MakePlots(df, i_sipm):
     plt.title('Plot of CSV Data 2450 SourceMeter')
     plt.legend()
     plt.grid()
-    plt.savefig('IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'_LogScale.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'_LogScale.pdf', dpi = 150, format = 'pdf')
     plt.close()
    
 
@@ -65,11 +65,16 @@ def MakePlots(df, i_sipm):
     plt.grid(axis='x', color='lightgray', linestyle='-')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data 2450 SourceMeter')
-    plt.savefig('Derivative_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'Derivative_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
 
+    der_I = der_/current_
+    max_value = max(der_I)
+    max_index = der_I.index(max_value)
+    return x2_[max_index]
 
-def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, label_sipm = 'test'):
+
+def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, label_sipm = 'test', dir = ''):
 
     if (NegBiasStart>0 or NegBiasEnd>0):
         sys.exit("It is expected a negative Bias voltage.")
@@ -120,8 +125,9 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     })
 
     if SaveCSV:
-        data.to_csv('IV_Curve_'+label_sipm+'.csv')
-    MakePlots(data,label_sipm)
+        data.to_csv(dir+'IV_Curve_'+label_sipm+'.csv')
+    Vbr = MakePlots(data,label_sipm,dir)
+    return Vbr
 
     
 
