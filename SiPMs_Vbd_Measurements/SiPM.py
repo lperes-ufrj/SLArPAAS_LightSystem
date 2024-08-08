@@ -105,7 +105,7 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     voltage_probe = np.linspace(NegBiasStart,NegBiasEnd,data_points)
     currents = np.zeros_like(voltage_probe)
     currents_stds = np.zeros_like(voltage_probe)
-    print(currents)
+    #print(currents)
     #print(currents_stds)
 
     for i in range(data_points):
