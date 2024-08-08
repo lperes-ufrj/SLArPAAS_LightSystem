@@ -21,7 +21,7 @@ from pymeasure.adapters import VISAAdapter
 
 
 dev = usb.core.find(idVendor=0x05e6,idProduct=0x2450)
-ep = dev[0].interfaces()[0].endpoints()[0]
+e = dev[0].interfaces()[0].endpoints()[0]
 i = dev[0].interfaces()[0].bInterfaceNumber
 
 dev.reset()
