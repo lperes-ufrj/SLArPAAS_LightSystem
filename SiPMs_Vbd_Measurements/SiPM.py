@@ -123,6 +123,8 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
         #'Current Std (A)': currents_stds,
     })
 
+    keithley.shutdown()
+
     if SaveCSV:
         data.to_csv(dir+'IV_Curve_'+label_sipm+'.csv')
 
