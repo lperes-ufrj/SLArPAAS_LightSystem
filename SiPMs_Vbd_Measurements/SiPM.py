@@ -69,8 +69,7 @@ def MakePlots(df, i_sipm, dir=''):
     plt.close()
 
     der_I = der_/current_
-    max_value = max(der_I)
-    max_index = der_I.index(max_value)
+    max_index = np.argmax(der_I)
     return x2_[max_index]
 
 
