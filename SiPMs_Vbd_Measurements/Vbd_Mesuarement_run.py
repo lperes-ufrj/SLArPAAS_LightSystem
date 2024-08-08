@@ -27,6 +27,10 @@ def select_relay(board_address,channel):
     bus.write_byte(board_address, ~(0x01 << (channel )))
 
 
+def turn_off_relaychs():
+    select_relay(0x27,9) # Turn off all relay channels in the board)
+    select_relay(0x25,9) # Turn off all relay channels in the board 
+
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -57,10 +61,11 @@ try:
                 SiPM_number = 11-i_ch # i_ch = 7, 6, 5, 4, 3, 2 -> SiPM_number = 4, 5, 6, 7, 8, 9
             line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+str(SiPM_number)+", "+str(Vbr)
             output_file.write(line+'\n')
+            print(SiPM_number, "Vbr = ", Vbr)
 
-except KeyboardInterrupt:
+except:
     output_file.close()
-    select_relay(boards_address[1],9) # Turn off all channels 
+    turn_off_relaychs()
 
 output_file.close()
-select_relay(boards_address[1],9) # Turn off all channels 
+turn_off_relaychs()

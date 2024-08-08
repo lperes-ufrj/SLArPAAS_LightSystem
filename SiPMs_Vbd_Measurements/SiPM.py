@@ -27,6 +27,7 @@ def MakePlots(df, i_sipm, dir=''):
     current = df.iloc[:, 1]  # the second column is Current\
 
     # Plot the data
+    # IVCurve_mmddhhmmX_ch
     plt.figure(figsize=(10, 6))
     plt.plot(voltage, current, marker='.', linestyle='--', label = i_sipm)
     plt.ylabel(r'Current ($\mu$A)')
