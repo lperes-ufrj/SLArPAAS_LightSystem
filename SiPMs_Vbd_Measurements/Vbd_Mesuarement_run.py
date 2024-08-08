@@ -30,7 +30,6 @@ def turn_off_relaychs():
     select_relay(0x27,9) # Turn off all relay channels in the board)
     select_relay(0x25,9) # Turn off all relay channels in the board 
 
-
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -47,7 +46,9 @@ output_file = open(dirname+filename,"a")
 
 try:
     for i_board, board_address in enumerate(boards_address):
+      
         turn_off_relaychs()
+
         for i_ch in SiPMs_channels[i_board]:
             select_relay(board_address,i_ch)
             # print(i_board,i_ch) 
@@ -62,8 +63,9 @@ try:
             line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+str(SiPM_number)+", "+str(Vbr)
             print(SiPM_number)
             output_file.write(line+'\n')
+            print(SiPM_number, "Vbr = ", Vbr)
 
-except KeyboardInterrupt:
+except:
     output_file.close()
     turn_off_relaychs()
 
