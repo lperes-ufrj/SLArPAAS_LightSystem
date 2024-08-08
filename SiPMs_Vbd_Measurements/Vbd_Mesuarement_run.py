@@ -58,8 +58,9 @@ try:
                 SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
             else: # board_address == 0x27
                 SiPM_number = 11-i_ch # i_ch = 7, 6, 5, 4, 3, 2 -> SiPM_number = 4, 5, 6, 7, 8, 9
+
+            line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+str(SiPM_number)+", "+str(Vbr)
             print(SiPM_number)
-            line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+SiPM_number+", "+Vbr
             output_file.write(line+'\n')
 
 except KeyboardInterrupt:
