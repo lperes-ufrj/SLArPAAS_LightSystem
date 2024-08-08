@@ -55,7 +55,7 @@ def MakePlots(df, i_sipm, dir=''):
 
     der_ , x2_  = Derivative(voltage, current)
     current_ = (current[:-1] + current[1:]) / 2
-    print(der_.size, x2_.size,current_.size)
+    # print(der_.size, x2_.size,current_.size)
     # Plot the data
     plt.figure(figsize=(10, 6))
     plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = i_sipm)
