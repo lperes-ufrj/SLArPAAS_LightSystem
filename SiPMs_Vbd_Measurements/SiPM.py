@@ -47,7 +47,7 @@ def MakePlots(df, i_sipm, dir=''):
     plt.grid()
     plt.savefig(dir+'IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'_LogScale.pdf', dpi = 150, format = 'pdf')
     plt.close()
-   
+
 
     plt.figure(figsize=(10, 6))
 
@@ -126,6 +126,7 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
 
     if SaveCSV:
         data.to_csv(dir+'IV_Curve_'+label_sipm+'.csv')
+
     Vbr = MakePlots(data,label_sipm,dir)
     return Vbr
 
