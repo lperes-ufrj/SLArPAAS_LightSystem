@@ -21,32 +21,32 @@ def Derivative(x,y):
     return dydx,x2 
     
 
-def MakePlots(df, i_sipm, dir=''):
+def MakePlots(df, dir='', measurement='', SiPM_number=0):
     #df = pd.read_csv(csv_file, skiprows=0,usecols=['Current (A)', 'Voltage (V)'])  
     voltage = df.iloc[:, 0]  # the first column is Voltage
     current = df.iloc[:, 1]  # the second column is Current\
 
     # Plot the data
-    # IVCurve_mmddhhmmX_ch
+    # IVCurve_mmddhhmmX_ch.pdf
     plt.figure(figsize=(10, 6))
-    plt.plot(voltage, current, marker='.', linestyle='--', label = i_sipm)
+    plt.plot(voltage, current, marker='.', linestyle='--', label = measurement+SiPM_number)
     plt.ylabel(r'Current ($\mu$A)')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data Oscilloscope')
     plt.legend()
     plt.grid()
-    plt.savefig(dir+'IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'IVCurve_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
     
     plt.figure(figsize=(10, 6))
-    plt.plot(voltage, -current, marker='.', linestyle='--', label = i_sipm)
+    plt.plot(voltage, -current, marker='.', linestyle='--', label = measurement+SiPM_number)
     plt.yscale('log')
     plt.ylabel(r'Current ($\mu$A)')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data 2450 SourceMeter')
     plt.legend()
     plt.grid()
-    plt.savefig(dir+'IVCurve_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'_LogScale.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'IVCurve_'+measurement+'_'+str(SiPM_number)+'_LogScale.pdf', dpi = 150, format = 'pdf')
     plt.close()
 
 
@@ -59,14 +59,14 @@ def MakePlots(df, i_sipm, dir=''):
     # print(der_.size, x2_.size,current_.size)
     # Plot the data
     plt.figure(figsize=(10, 6))
-    plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = i_sipm)
+    plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = measurement+SiPM_number)
     plt.ylabel(r'$\frac{dI}{IdV}$', fontsize =17, rotation = 'vertical')
     #plt.xticks(np.round(np.linspace(50,60,20)))
     plt.legend()
     plt.grid(axis='x', color='lightgray', linestyle='-')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data 2450 SourceMeter')
-    plt.savefig(dir+'Derivative_'+str(time.strftime("%Y%m%d%M"))+'_'+i_sipm+'.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'Derivative_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
 
     der_I = der_/current_
@@ -74,7 +74,7 @@ def MakePlots(df, i_sipm, dir=''):
     return x2_[max_index]
 
 
-def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, label_sipm = 'test', dir = ''):
+def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, dir = '', measurement = '', SiPM_number = 0):
 
     if (NegBiasStart>0 or NegBiasEnd>0):
         sys.exit("It is expected a negative Bias voltage.")
@@ -127,9 +127,9 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     keithley.shutdown()
 
     if SaveCSV:
-        data.to_csv(dir+'IV_Curve_'+label_sipm+'.csv')
+        data.to_csv(dir+'IV_Curve_'+measurement+'_'+str(SiPM_number)+'.csv')
 
-    Vbr = MakePlots(data,label_sipm,dir)
+    Vbr = MakePlots(data,dir,measurement,SiPM_number)
     return Vbr
 
     

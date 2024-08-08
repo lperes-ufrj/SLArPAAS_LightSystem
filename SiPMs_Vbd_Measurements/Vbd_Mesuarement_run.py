@@ -40,27 +40,29 @@ SiPM_set_name = ops.n
 dt_now = datetime.datetime.now()
 dirname = 'data/'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+'/'
 filename = dt_now.strftime('%m%d%H%M')+SiPM_set_name+'.csv'
+measurement = dt_now.strftime('%m%d%H%M')+SiPM_set_name
 
 my_makedirs(dirname)
 output_file = open(dirname+filename,"a")
 
 try:
     for i_board, board_address in enumerate(boards_address):
-      
+
         turn_off_relaychs()
 
         for i_ch in SiPMs_channels[i_board]:
             select_relay(board_address,i_ch)
             # print(i_board,i_ch) 
-            Vbr = SiPM.VBD_Measurement(label_sipm=str(i_ch)+'_'+str(i_board), dir=dirname)
-            time.sleep(.5)
 
             if(board_address == 0x25):
                 SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
             else: # board_address == 0x27
                 SiPM_number = 11-i_ch # i_ch = 7, 6, 5, 4, 3, 2 -> SiPM_number = 4, 5, 6, 7, 8, 9
 
-            line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+str(SiPM_number)+", "+str(Vbr)
+            Vbr = SiPM.VBD_Measurement(dir=dirname, measurement=measurement, SiPM_number=SiPM_number)
+            time.sleep(.5)
+
+            line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+'_'+str(SiPM_number)+", "+str(Vbr)
             print(SiPM_number)
             output_file.write(line+'\n')
             print(SiPM_number, "Vbr = ", Vbr)
