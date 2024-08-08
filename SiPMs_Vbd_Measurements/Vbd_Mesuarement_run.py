@@ -47,7 +47,7 @@ output_file = open(dirname+filename,"a")
 
 try:
     for i_board, board_address in enumerate(boards_address):
-        select_relay(0x27,9) # Turn off all relay channels in the board)
+        select_relay(0x27,9) # Turn off all relay channels in the board
         select_relay(0x25,9) # Turn off all relay channels in the board 
         for i_ch in SiPMs_channels[i_board]:
             select_relay(board_address,i_ch)
