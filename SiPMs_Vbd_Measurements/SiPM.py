@@ -183,5 +183,5 @@ def RQ_Measurement(PosBiasStart = 0.,PosBiasEnd = 5,data_points = 70, SaveCSV = 
     if SaveCSV:
         data.to_csv(dir+'IV_Curve_'+measurement_label+'_'+str(SiPM_number)+'.csv')
 
-    Vbr = MakePlots(data,dir,measurement_label,SiPM_number)
-    return Vbr
+    Rq = MakePlots(data,dir,measurement_label,SiPM_number)
+    return Rq
