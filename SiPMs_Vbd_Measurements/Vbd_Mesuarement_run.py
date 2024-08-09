@@ -78,10 +78,10 @@ try:
             if measurement_name == 'rq':
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'both':
-                Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label+'_vbd', SiPM_number=SiPM_number)
                 time.sleep(3.)
-                Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
-                
+                Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label+'_rq', SiPM_number=SiPM_number)
+
             time.sleep(.5)
 
             line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+'_'+str(SiPM_number)+", "+str(Vbr)
