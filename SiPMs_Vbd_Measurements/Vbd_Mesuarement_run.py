@@ -17,30 +17,40 @@ SiPMs_channels = [[2,1,0],[7,6,5,4,3,2]]
 def options():
 
     parser = argparse.ArgumentParser(usage=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-n",
+    parser.add_argument("-n", "--name",
                         default="X",
                         help="name of the SiPM sets (A-E)")
+    parser.add_argument("-c", "--condition",
+                        default="non-specified",
+                        help="conditions (room, before, cryogenic)")
     return parser.parse_args()
 
 
 def select_relay(board_address,channel):
     bus.write_byte(board_address, ~(0x01 << (channel )))
 
+
 def turn_off_relaychs():
     select_relay(0x27,9) # Turn off all relay channels in the board)
     select_relay(0x25,9) # Turn off all relay channels in the board 
+
 
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
 
+
 ops = options()
-SiPM_set_name = ops.n
+SiPM_set_name = ops.name
+condition_name = ops.condition
+
+print("SiPM set name (-n) =", SiPM_set_name)
+print("condition (-c) =", condition_name)
 
 dt_now = datetime.datetime.now()
-dirname = 'data/'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+'/'
-filename = dt_now.strftime('%m%d%H%M')+SiPM_set_name+'.csv'
-measurement = dt_now.strftime('%m%d%H%M')+SiPM_set_name
+dirname = 'data/'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'/'
+filename = dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'.csv'
+measurement = dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name
 
 my_makedirs(dirname)
 output_file = open(dirname+filename,"a")
@@ -53,7 +63,6 @@ try:
         for i_ch in SiPMs_channels[i_board]:
             select_relay(board_address,i_ch)
 
-
             if(board_address == 0x25):
                 SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
             else: # board_address == 0x27
@@ -64,7 +73,7 @@ try:
 
             line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+'_'+str(SiPM_number)+", "+str(Vbr)
             output_file.write(line+'\n')
-            print(SiPM_number, "Vbr = ", round(Vbr,2))
+            print(SiPM_number, "Vbr =", round(Vbr,2))
 
 except KeyboardInterrupt:
     output_file.close()
