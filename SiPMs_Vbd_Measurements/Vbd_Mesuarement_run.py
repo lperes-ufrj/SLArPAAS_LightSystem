@@ -23,6 +23,9 @@ def options():
     parser.add_argument("-c", "--condition",
                         default="non-specified",
                         help="conditions (room, before, cryogenic)")
+    parser.add_argument("-m", "--measurement",
+                        default="non-specified",
+                        help="measurement (vbd, rq, both)")
     return parser.parse_args()
 
 
@@ -43,14 +46,16 @@ def my_makedirs(path):
 ops = options()
 SiPM_set_name = ops.name
 condition_name = ops.condition
+measurement_name = ops.measurement
 
 print("SiPM set name (-n) =", SiPM_set_name)
 print("condition (-c) =", condition_name)
+print("measurement (-m) =", measurement_name)
 
 dt_now = datetime.datetime.now()
 dirname = 'data/'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'/'
-filename = dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'.csv'
-measurement = dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name
+filename = measurement_name+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'.csv'
+measurement_label = measurement_name+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name
 
 my_makedirs(dirname)
 output_file = open(dirname+filename,"a")
@@ -67,8 +72,16 @@ try:
                 SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
             else: # board_address == 0x27
                 SiPM_number = 11-i_ch # i_ch = 7, 6, 5, 4, 3, 2 -> SiPM_number = 4, 5, 6, 7, 8, 9
-
-            Vbr = SiPM.VBD_Measurement(dir=dirname, measurement=measurement, SiPM_number=SiPM_number)
+            
+            if measurement_name == 'vbd':
+                Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+            if measurement_name == 'rq':
+                Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+            if measurement_name == 'both':
+                Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                time.sleep(3.)
+                Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                
             time.sleep(.5)
 
             line = dt_now.strftime('%m%d%H%M')+'_'+SiPM_set_name+'_'+str(SiPM_number)+", "+str(Vbr)

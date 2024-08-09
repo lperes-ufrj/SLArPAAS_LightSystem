@@ -86,7 +86,7 @@ def ShutdownPowerSupply():
     keithley.shutdown()
 
 
-def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, dir = '', measurement = '', SiPM_number = 0):
+def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
 
     if (NegBiasStart>0 or NegBiasEnd>0):
         sys.exit("It is expected a negative Bias voltage.")
@@ -135,10 +135,53 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     })
 
     if SaveCSV:
-        data.to_csv(dir+'IV_Curve_'+measurement+'_'+str(SiPM_number)+'.csv')
+        data.to_csv(dir+'IV_Curve_'+measurement_label+'_'+str(SiPM_number)+'.csv')
 
-    Vbr = MakePlots(data,dir,measurement,SiPM_number)
+    Vbr = MakePlots(data,dir,measurement_label,SiPM_number)
     return Vbr
 
+def RQ_Measurement(PosBiasStart = 0.,PosBiasEnd = 5,data_points = 70, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
     
+    if (PosBiasStart!=0 or PosBiasEnd>7):
+        sys.exit("The forward Bias range is out of the boundaries for this measurement.")
 
+    dev = usb.core.find(idVendor=0x05e6,idProduct=0x2450)
+    dev.reset()
+
+    adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
+    keithley = Keithley2450(adapter)
+    keithley.reset()
+    keithley.apply_voltage()                # Sets up to source voltage
+    keithley.source_voltage_range = PosBiasEnd  # Sets the source voltage range to PosBiasEnd
+    keithley.compliance_current = 1e-4        # Sets the compliance current to 100 mu A.
+    keithley.source_voltage = PosBiasStart          # Sets the source voltage to 0 Volts.
+    keithley.enable_source()                # Enables the source output
+    keithley.measure_current()              # Sets up to measure voltage
+
+
+    # Allocate arrays to store the measurement results
+    voltage_probe = np.linspace(PosBiasStart,PosBiasEnd,data_points)
+    currents = np.zeros_like(voltage_probe)
+    currents_stds = np.zeros_like(voltage_probe)
+    #print(currents)
+    #print(currents_stds)
+
+    for i in range(data_points):
+
+        keithley.source_voltage = voltage_probe[i]# Ramps the current to 5 mA
+        currents[i] = keithley.current  # Save current
+        time.sleep(.2)
+        #currents_stds[i] = keithley.std_current # Save current std
+
+    # Save the data columns in a CSV file
+    data = pd.DataFrame({
+        'Voltage (V)': voltage_probe,
+        'Current (A)': currents,
+        #'Current Std (A)': currents_stds,
+    })
+
+    if SaveCSV:
+        data.to_csv(dir+'IV_Curve_'+measurement_label+'_'+str(SiPM_number)+'.csv')
+
+    Vbr = MakePlots(data,dir,measurement_label,SiPM_number)
+    return Vbr
