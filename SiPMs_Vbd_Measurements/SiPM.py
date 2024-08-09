@@ -29,7 +29,7 @@ def MakePlots(df, dir='', measurement='', SiPM_number=0):
     # Plot the data
     # IVCurve_mmddhhmmX_ch.pdf
     plt.figure(figsize=(10, 6))
-    plt.plot(voltage, current, marker='.', linestyle='--', label = measurement+SiPM_number)
+    plt.plot(voltage, current, marker='.', linestyle='--', label = measurement+str(SiPM_number))
     plt.ylabel(r'Current ($\mu$A)')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data Oscilloscope')
@@ -39,14 +39,14 @@ def MakePlots(df, dir='', measurement='', SiPM_number=0):
     plt.close()
     
     plt.figure(figsize=(10, 6))
-    plt.plot(voltage, -current, marker='.', linestyle='--', label = measurement+SiPM_number)
+    plt.plot(voltage, -current, marker='.', linestyle='--', label = measurement+str(SiPM_number))
     plt.yscale('log')
     plt.ylabel(r'Current ($\mu$A)')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data 2450 SourceMeter')
     plt.legend()
     plt.grid()
-    plt.savefig(dir+'IVCurve_'+measurement+'_'+str(SiPM_number)+'_LogScale.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'IVCurve_LogScale'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
 
 
@@ -59,19 +59,29 @@ def MakePlots(df, dir='', measurement='', SiPM_number=0):
     # print(der_.size, x2_.size,current_.size)
     # Plot the data
     plt.figure(figsize=(10, 6))
-    plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = measurement+SiPM_number)
+    plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = measurement+str(SiPM_number))
     plt.ylabel(r'$\frac{dI}{IdV}$', fontsize =17, rotation = 'vertical')
     #plt.xticks(np.round(np.linspace(50,60,20)))
     plt.legend()
     plt.grid(axis='x', color='lightgray', linestyle='-')
     plt.xlabel('Reverse Voltage (V)')
     plt.title('Plot of CSV Data 2450 SourceMeter')
-    plt.savefig(dir+'Derivative_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
+    plt.savefig(dir+'dI_IdV_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
 
     der_I = der_/current_
     max_index = np.argmax(der_I)
     return x2_[max_index]
+
+def ShutdownPowerSupply():
+
+    dev = usb.core.find(idVendor=0x05e6,idProduct=0x2450)
+    dev.reset()
+
+    adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
+    keithley = Keithley2450(adapter)
+    keithley.reset()
+    keithley.shutdown()
 
 
 def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCSV = True, dir = '', measurement = '', SiPM_number = 0):
@@ -83,7 +93,6 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     #e = dev[0].interfaces()[0].endpoints()[0]
     #i = dev[0].interfaces()[0].bInterfaceNumber
     dev.reset()
-
     #if dev.is_kernel_driver_active(i):
     #    try:
     #        dev.detach_kernel_driver(i)
@@ -93,7 +102,6 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
 
     adapter = VISAAdapter("USB0::0x05e6::0x2450::04614968::INSTR")
     keithley = Keithley2450(adapter)
-
     keithley.reset()
     keithley.apply_voltage()                # Sets up to source voltage
     keithley.source_voltage_range = NegBiasStart  # Sets the source voltage range to -55 V
@@ -123,8 +131,6 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
         'Current (A)': currents,
         #'Current Std (A)': currents_stds,
     })
-
-    keithley.shutdown()
 
     if SaveCSV:
         data.to_csv(dir+'IV_Curve_'+measurement+'_'+str(SiPM_number)+'.csv')
