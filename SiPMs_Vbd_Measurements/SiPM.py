@@ -21,10 +21,16 @@ def Derivative(x,y):
     return dydx,x2 
     
 
-def MakePlots(df, dir='', measurement='', SiPM_number=0):
+def MakePlots(df, dir='', measurement='', SiPM_number=0, justIV = False):
     #df = pd.read_csv(csv_file, skiprows=0,usecols=['Current (A)', 'Voltage (V)'])  
     voltage = df.iloc[:, 0]  # the first column is Voltage
     current = df.iloc[:, 1]  # the second column is Current\
+
+    current = np.array(current)
+    der_ , x2_  = Derivative(voltage, current)
+    current_ = (current[:-1] + current[1:]) / 2
+    der_I = der_/current_
+    max_index = np.argmax(der_I)
 
     # Plot the data
     # IVCurve_mmddhhmmX_ch.pdf
@@ -38,41 +44,36 @@ def MakePlots(df, dir='', measurement='', SiPM_number=0):
     plt.grid()
     plt.savefig(dir+'IVCurve_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
     plt.close()
-    
-    plt.figure(figsize=(10, 6))
-    plt.plot(voltage, -current, marker='.', linestyle='--', label = measurement+str(SiPM_number))
-    plt.yscale('log')
-    # plt.ylabel(r'Current ($\mu$A)')
-    plt.ylabel('Current (A)')
-    plt.xlabel('Reverse Voltage (V)')
-    plt.title('Plot of CSV Data 2450 SourceMeter')
-    plt.legend()
-    plt.grid()
-    plt.savefig(dir+'IVCurve_LogScale'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
-    plt.close()
+
+    if (not justIV):    
+        plt.figure(figsize=(10, 6))
+        plt.plot(voltage, -current, marker='.', linestyle='--', label = measurement+str(SiPM_number))
+        plt.yscale('log')
+        # plt.ylabel(r'Current ($\mu$A)')
+        plt.ylabel('Current (A)')
+        plt.xlabel('Reverse Voltage (V)')
+        plt.title('Plot of CSV Data 2450 SourceMeter')
+        plt.legend()
+        plt.grid()
+        plt.savefig(dir+'IVCurve_LogScale_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
+        plt.close()
 
 
-    plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(10, 6))
+        # print(der_.size, x2_.size,current_.size)
+        # Plot the data
+        plt.figure(figsize=(10, 6))
+        plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = measurement+str(SiPM_number))
+        plt.ylabel(r'$\frac{dI}{IdV}$', fontsize =17, rotation = 'vertical')
+        #plt.xticks(np.round(np.linspace(50,60,20)))
+        plt.legend()
+        plt.grid(axis='x', color='lightgray', linestyle='-')
+        plt.xlabel('Reverse Voltage (V)')
+        plt.title('Plot of CSV Data 2450 SourceMeter')
+        plt.savefig(dir+'dI_IdV_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
+        plt.close()
 
-    current = np.array(current)
 
-    der_ , x2_  = Derivative(voltage, current)
-    current_ = (current[:-1] + current[1:]) / 2
-    # print(der_.size, x2_.size,current_.size)
-    # Plot the data
-    plt.figure(figsize=(10, 6))
-    plt.plot(x2_, der_/current_, marker='*', linestyle='--', label = measurement+str(SiPM_number))
-    plt.ylabel(r'$\frac{dI}{IdV}$', fontsize =17, rotation = 'vertical')
-    #plt.xticks(np.round(np.linspace(50,60,20)))
-    plt.legend()
-    plt.grid(axis='x', color='lightgray', linestyle='-')
-    plt.xlabel('Reverse Voltage (V)')
-    plt.title('Plot of CSV Data 2450 SourceMeter')
-    plt.savefig(dir+'dI_IdV_'+measurement+'_'+str(SiPM_number)+'.pdf', dpi = 150, format = 'pdf')
-    plt.close()
-
-    der_I = der_/current_
-    max_index = np.argmax(der_I)
     return x2_[max_index]
 
 def ShutdownPowerSupply():
@@ -140,7 +141,7 @@ def VBD_Measurement(NegBiasStart = -56,NegBiasEnd = -50,data_points = 70, SaveCS
     Vbr = MakePlots(data,dir,measurement_label,SiPM_number)
     return Vbr
 
-def RQ_Measurement(PosBiasStart = 0.,PosBiasEnd = 5,data_points = 70, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
+def RQ_Measurement(PosBiasStart = 0.,PosBiasEnd = 3,data_points = 70, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
     
     if (PosBiasStart!=0 or PosBiasEnd>7):
         sys.exit("The forward Bias range is out of the boundaries for this measurement.")
@@ -183,5 +184,5 @@ def RQ_Measurement(PosBiasStart = 0.,PosBiasEnd = 5,data_points = 70, SaveCSV = 
     if SaveCSV:
         data.to_csv(dir+'IV_Curve_'+measurement_label+'_'+str(SiPM_number)+'.csv')
 
-    Rq = MakePlots(data,dir,measurement_label,SiPM_number)
+    Rq = MakePlots(data,dir,measurement_label,SiPM_number, justIV = True)
     return Rq

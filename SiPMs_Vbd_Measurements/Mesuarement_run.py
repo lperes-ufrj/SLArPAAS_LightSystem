@@ -53,9 +53,9 @@ print("condition (-c) =", condition_name)
 print("measurement (-m) =", measurement_name)
 
 dt_now = datetime.datetime.now()
-dirname = 'data/'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'/'
+dirname = 'data/'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+'_'+condition_name+'/'
 filename = measurement_name+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name+'.csv'
-measurement_label = measurement_name+dt_now.strftime('%m%d%H%M')+SiPM_set_name+condition_name
+measurement_label = measurement_name+'_'+dt_now.strftime('%m%d%H%M')+SiPM_set_name+'_'+condition_name
 
 my_makedirs(dirname)
 output_file = open(dirname+filename,"a")
