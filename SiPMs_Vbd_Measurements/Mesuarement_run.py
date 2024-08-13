@@ -12,7 +12,7 @@ bus = smbus.SMBus(1)
 
 # I2C address of the relay board
 boards_address = np.array([0x25,0x27])
-SiPMs_channels = [[2,1,0],[7,6,5,4,2,1]]
+SiPMs_channels = [[2,1,0],[7,6,5,2,1,0]]
 
 def options():
 
@@ -72,9 +72,9 @@ try:
                 SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
             else: # board_address == 0x27
                 if(i_ch>3):
-                    SiPM_number = 11-i_ch # i_ch = 7, 6, 5, 4 -> SiPM_number = 4, 5, 6, 7
+                    SiPM_number = 11-i_ch # i_ch = 7, 6, 5 -> SiPM_number = 4, 5, 6
                 else:
-                    SiPM_number = 10-i_ch # i_ch = 2, 1 -> SiPM_number = 8, 9
+                    SiPM_number = 9-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 7, 8, 9
             
             if measurement_name == 'vbd':
                 Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
@@ -82,7 +82,7 @@ try:
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'both':
                 Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label+'_vbd', SiPM_number=SiPM_number)
-                time.sleep(3.)
+                time.sleep(1.)
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label+'_rq', SiPM_number=SiPM_number)
 
             time.sleep(.5)
