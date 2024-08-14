@@ -78,14 +78,14 @@ try:
             
             if measurement_name == 'vbd':
                 if(condition_name == 'cold'):
-                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -41, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -40, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
                 else:
                     Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'rq':
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'both':
                 if(condition_name == 'cold'):
-                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -41, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -40, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
                 else:
                     Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
                 time.sleep(1.)
