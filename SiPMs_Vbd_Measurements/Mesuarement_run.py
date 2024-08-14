@@ -12,7 +12,7 @@ bus = smbus.SMBus(1)
 
 # I2C address of the relay board
 boards_address = np.array([0x25,0x27])
-SiPMs_channels = [[2,1,0,6,7],[5,2,1,0]]
+SiPMs_channels = [[2,1,0,6,7],[7,6,5,2]]
 
 def options():
 
