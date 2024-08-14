@@ -22,7 +22,7 @@ def options():
                         help="name of the SiPM sets (A-E)")
     parser.add_argument("-c", "--condition",
                         default="non-specified",
-                        help="conditions (room, before, cryogenic)")
+                        help="conditions (room, before, cold)")
     parser.add_argument("-m", "--measurement",
                         default="non-specified",
                         help="measurement (vbd, rq, both)")

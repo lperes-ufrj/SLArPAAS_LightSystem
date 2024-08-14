@@ -87,7 +87,7 @@ def ShutdownPowerSupply():
     keithley.shutdown()
 
 
-def VBD_Measurement(NegBiasStart = -54,NegBiasEnd = -51,data_points = 40, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
+def VBD_Measurement(NegBiasStart = -44,NegBiasEnd = -40,data_points = 40, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
 
     if (NegBiasStart>0 or NegBiasEnd>0):
         sys.exit("It is expected a negative Bias voltage.")
@@ -108,7 +108,7 @@ def VBD_Measurement(NegBiasStart = -54,NegBiasEnd = -51,data_points = 40, SaveCS
     keithley.reset()
     keithley.apply_voltage()                # Sets up to source voltage
     keithley.source_voltage_range = NegBiasStart  # Sets the source voltage range to -55 V
-    keithley.compliance_current = 1e-4        # Sets the compliance current to 100 mu A.
+    keithley.compliance_current = 2e-4        # Sets the compliance current to 100 mu A.
     keithley.source_voltage = NegBiasStart          # Sets the source voltage to 0 Volts.
     keithley.enable_source()                # Enables the source output
     keithley.measure_current()              # Sets up to measure voltage
