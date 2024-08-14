@@ -87,7 +87,7 @@ def ShutdownPowerSupply():
     keithley.shutdown()
 
 
-def VBD_Measurement(NegBiasStart = -44,NegBiasEnd = -40,data_points = 40, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
+def VBD_Measurement(NegBiasStart = -54,NegBiasEnd = -51,data_points = 40, SaveCSV = True, dir = '', measurement_label = '', SiPM_number = 0):
 
     if (NegBiasStart>0 or NegBiasEnd>0):
         sys.exit("It is expected a negative Bias voltage.")
