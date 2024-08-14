@@ -77,11 +77,17 @@ try:
                     SiPM_number = 9-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 7, 8, 9
             
             if measurement_name == 'vbd':
-                Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                if(condition_name == 'cold'):
+                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -41, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                else:
+                    Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'rq':
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'both':
-                Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label+'_vbd', SiPM_number=SiPM_number)
+                if(condition_name == 'cold'):
+                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -41, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                else:
+                    Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
                 time.sleep(1.)
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label+'_rq', SiPM_number=SiPM_number)
 
