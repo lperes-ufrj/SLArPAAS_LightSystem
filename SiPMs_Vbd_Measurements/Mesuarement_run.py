@@ -12,7 +12,7 @@ bus = smbus.SMBus(1)
 
 # I2C address of the relay board
 boards_address = np.array([0x25,0x27])
-SiPMs_channels = [[2,1,0,6,7],[7,6,5,2]]
+SiPMs_channels = [[3,2,1,6,7],[7,6,5,2]]
 
 def options():
 
@@ -69,8 +69,8 @@ try:
             select_relay(board_address,i_ch)
 
             if(board_address == 0x25):
-                if(i_ch<3):
-                    SiPM_number = 3-i_ch # i_ch = 2, 1, 0 -> SiPM_number = 1, 2, 3
+                if(i_ch<4):
+                    SiPM_number = 4-i_ch # i_ch = 3, 2, 1 -> SiPM_number = 1, 2, 3
                 else:
                     SiPM_number = i_ch+2 # i_ch = 6, 7 -> SiPM_number = 8, 9
             else: # board_address == 0x27
@@ -88,7 +88,7 @@ try:
                 Rq = SiPM.RQ_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
             if measurement_name == 'both':
                 if(condition_name == 'cold'):
-                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -44, NegBiasEnd = -40, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
+                    Vbr = SiPM.VBD_Measurement(NegBiasStart = -50, NegBiasEnd = -43, dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
                 else:
                     Vbr = SiPM.VBD_Measurement(dir=dirname, measurement_label=measurement_label, SiPM_number=SiPM_number)
                 time.sleep(1.)
