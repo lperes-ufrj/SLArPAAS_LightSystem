@@ -15,7 +15,7 @@ def averaged_trace(scope, measurement_number, averages=8):
     # Save the trace data as a csv and a png plot, without showing the plot
     # (the averaging mode and the number of averages is also automatically
     # saved inside the file, together with a timestamp and more)
-    scope.set_options_getTrace_save(fname=f"../FirstSLArPAAS_SiPMChannel_ColdTest/largepulses_{measurement_number}",num_points=1000)
+    scope.set_options_getTrace_save(fname=f"../FirstSLArPAAS_SiPMChannel_ColdTest/fulltpc_withhighertrigger_2pf_2p7kohm_noradiosource_{measurement_number}",num_points=1000)
 
 def different_averaging():
     # Connect to the scope
@@ -25,7 +25,7 @@ def different_averaging():
     # Prepare a two panel plot
    
     # Obtain traces for different numbers of averages
-    for i in range(1000):
+    for i in range(400):
         averaged_trace(scope, i)
         # Plot channel 1 to ax[0] and ch 3 to ax[1]
 
