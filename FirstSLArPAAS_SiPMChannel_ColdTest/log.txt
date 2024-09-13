@@ -1,6 +1,9 @@
 12 Sep 2024
 
-Taking data in the dewar with liquid argon
+Taking data in the dewar with liquid argon:
+
+=====================================================================
+Label = measurement
 
 -47V Bias 
 -.15 micro A 
@@ -8,6 +11,7 @@ Taking data in the dewar with liquid argon
 Trigger level -80mV
 
 =====================================================================
+Label = largepulses
 
 Large pulses with 1pF capacitor
 
