@@ -1,0 +1,19 @@
+12 Sep 2024
+
+Taking data in the dewar with liquid argon
+
+-47V Bias 
+-.15 micro A 
+
+Trigger level -80mV
+
+=====================================================================
+
+Large pulses with 1pF capacitor
+
+-43V Bias 
+-70 nA 
+
+Trigger level -160mV
+
+=====================================================================
