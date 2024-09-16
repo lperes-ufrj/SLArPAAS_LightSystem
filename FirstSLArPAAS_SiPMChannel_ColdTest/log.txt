@@ -5,6 +5,40 @@
 13 Sep 2024
 
 Taking data in the dewar with liquid argon:
+
+=====================================================================
+
+This is the run 
+
+Label = fulltpc_55p6mVtrigger_2pf_2p7kohm_WithRadiosource
+
+Full TPC under liquid argon RTDs T1, T2 , T3 and T4
+
+Bias -44V
+
+-.11 micro A
+
+Trigger Level at 55.6mV
+
+=====================================================================
+
+=====================================================================
+
+This is the run 
+
+Label = fulltpc_withhighertrigger_2pf_2p7kohm_WithRadiosource
+
+Full TPC under liquid argon RTDs T1, T2 , T3 and T4
+
+Bias -44V
+
+-.11 micro A
+
+Trigger Level at 45.0mV
+
+=====================================================================
+
+
 =====================================================================
 
 This is the run 
