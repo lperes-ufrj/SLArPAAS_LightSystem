@@ -3,19 +3,18 @@ import serial
 import numpy as np
 import matplotlib.pyplot as plt
 # Import necessary packages
-from pymeasure.instruments.keithley import Keithley2450
 import pyvisa as visa
 import pandas as pd
 from time import sleep
 
 import keyoscacquire.oscacq as koa
 
-def averaged_trace(scope, measurement_number, averages=8):
+def averaged_trace(scope, measurement_number, averages=1):
     # Set the number of averages and get a trace
     # Save the trace data as a csv and a png plot, without showing the plot
     # (the averaging mode and the number of averages is also automatically
     # saved inside the file, together with a timestamp and more)
-    scope.set_options_getTrace_save(fname=f"../FirstSLArPAAS_SiPMChannel_ColdTest/fulltpc_55p6mVtrigger_2pf_2p7kohm_WithRadiosource_{measurement_number}",num_points=1000)
+    scope.set_options_getTrace_save(fname=f"../FirstSLArPAAS_SiPMChannel_ColdTest/roomtemp_68p2mVtrigger_2pf_2p7kohm_OnlyPreAmpNoBias_{measurement_number}",num_points=1000)
 
 def different_averaging():
     # Connect to the scope
