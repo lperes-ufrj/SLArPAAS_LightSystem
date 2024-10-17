@@ -58,6 +58,4 @@ Data sheet with the measurements in the cold.
 
 Data sheet with the measurements at room temperature.
 
-
-
-=========================
+---
