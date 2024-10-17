@@ -11,6 +11,7 @@ Jupyter Notebooks of the firsts measurements with one SiPM, includes some data t
 
 Data took with the Scope used in the jupyter notebooks above.
 
+---
 ### PreAmplifiers Data
 
 These folder have the early R&D for the Pre Amplifier board. All data collected in the folders listed below were took with one SiPM.
@@ -27,6 +28,7 @@ Data collected with a first 2-channel prototype.
 
 Data collected with the nEXO preAmplifier Board.
 
+---
 ### ./SiPMs_Vbd_Measurements
 
 Folder with data and codes regarding the breakdown voltage and queenching resistor of the SiPMs.
